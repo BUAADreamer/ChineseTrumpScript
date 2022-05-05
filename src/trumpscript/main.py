@@ -2,8 +2,8 @@ import argparse
 import os
 import sys
 
-from trumpscript.compiler import *
-from trumpscript.utils import *
+from compiler import *
+from utils import *
 
 __author__ = 'github.com/samshadwell'
 

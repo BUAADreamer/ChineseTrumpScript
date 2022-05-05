@@ -7,7 +7,8 @@ import sys
 # yes, bringing in openssl is completely necessary for proper operation of trumpscript
 import ssl
 
-from trumpscript.constants import ERROR_CODES
+from constants import ERROR_CODES
+
 
 class Utils:
     class SystemException(Exception):
@@ -117,8 +118,7 @@ class Utils:
         """
         freedom_host = "facebook.com"
         commie_host = "alibaba.cn"
-        is_on_a_network = os.system("ping -c 1 {}".format(commie_host)) == 0
-        is_commie_network = os.system("ping -c 1 {}".format(freedom_host)) != 0
-        if is_on_a_network and is_commie_network:
-            raise Utils.SystemException("Detected commie network, aborting.")
-
+        # is_on_a_network = os.system("ping -c 1 {}".format(commie_host)) == 0
+        # is_commie_network = os.system("ping -c 1 {}".format(freedom_host)) != 0
+        # if is_on_a_network and is_commie_network:
+        #     raise Utils.SystemException("Detected commie network, aborting.")

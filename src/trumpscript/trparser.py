@@ -3,7 +3,7 @@
 
 from ast import *
 
-from trumpscript.constants import *
+from constants import *
 
 
 class Parser:

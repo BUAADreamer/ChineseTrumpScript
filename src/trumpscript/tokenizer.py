@@ -5,10 +5,10 @@ import re
 import random
 from datetime import datetime
 
-from trumpscript.allowed_words import ALLOWED
-from trumpscript.constants import *
-from trumpscript.disallowed_words import DISALLOWED
-from trumpscript.utils import Utils
+from allowed_words import ALLOWED
+from constants import *
+from disallowed_words import DISALLOWED
+from utils import Utils
 
 class Tokenizer:
     @staticmethod

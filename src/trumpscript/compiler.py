@@ -3,8 +3,8 @@
 
 from ast import *
 
-from trumpscript.parser import *
-from trumpscript.tokenizer import *
+from trparser import *
+from tokenizer import *
 
 
 class Compiler:
