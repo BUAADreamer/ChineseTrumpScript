@@ -14,7 +14,7 @@ class Compiler:
 
     def compile(self, source):
         modu = self.parse(self.tokenize(source))
-        fix_missing_locations(modu)
+        # fix_missing_locations(modu)
         exec(compile(modu, filename="<ast>", mode="exec"))
 
     def parse(self, tokens):
