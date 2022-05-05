@@ -60,8 +60,9 @@ class Utils:
         Make sure the currently-running OS is not Windows, because we're not PC
         :return:
         """
-        if os.name == 'nt':
-            raise Utils.SystemException('os');
+        pass
+        # if os.name == 'nt':
+        #     raise Utils.SystemException('os');
 
     @staticmethod
     def boycott_apple() -> None:
@@ -84,10 +85,10 @@ class Utils:
         """
         loc = locale.getdefaultlocale()
         loc = loc[0].upper() if len(loc) > 0 else ''
-        if 'CN' in loc:
-            raise Utils.SystemException("We can't let China beat us!")
-        elif 'MX' in loc and wall:
-            raise Utils.SystemException("I will build a great [fire]wall on our southern border.")
+        # if 'CN' in loc:
+        #     raise Utils.SystemException("We can't let China beat us!")
+        # elif 'MX' in loc and wall:
+        #     raise Utils.SystemException("I will build a great [fire]wall on our southern border.")
 
         # Warn if the system has any certificates from Chinese authorities.
         # If the system has any certificates from Kenyan authorities,
