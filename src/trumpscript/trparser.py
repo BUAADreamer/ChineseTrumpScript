@@ -1,6 +1,6 @@
 # Parser for TrumpScript
 # 1/16/2016
-
+import ast
 from ast import *
 
 from constants import *
@@ -86,7 +86,8 @@ class Parser:
         if self.peek(tokens) == t_type:
             return tokens.pop(0)
         else:
-            print("failed to consume " + str(t_type) + ", got " + str(self.peek(tokens)) + " instead on line " + str(self.on_line(tokens)) + ".")
+            print("failed to consume " + str(t_type) + ", got " + str(self.peek(tokens)) + " instead on line " + str(
+                self.on_line(tokens)) + ".")
 
     # Mod
     def handle_module(self, tokens) -> Module:
@@ -101,7 +102,7 @@ class Parser:
             # print(statement)
             fix_missing_locations(statement)
 
-        return Module(body=body_list)
+        return ast.Module(body=body_list)
 
     # Obnoxious coverage
     def handle_anything(self, tokens):
@@ -120,12 +121,12 @@ class Parser:
         while cur_token["type"] != T_RBrace or level > 0:
             # TODO edge case error
             if cur_token["type"] == T_LBrace:
-                #we got the left brace of the actual structure
-                #the  first time
-                #print("level up")
+                # we got the left brace of the actual structure
+                # the  first time
+                # print("level up")
                 level += 1
             if cur_token["type"] == T_RBrace:
-                #print("level down")
+                # print("level down")
                 level -= 1
             brace_contents.append(cur_token)
             cur_token = tokens.pop(0)
@@ -139,7 +140,7 @@ class Parser:
                 print("Called handle_brace on a non-terminated brace")
             res, contents = self.handle_anything(brace_contents)
             if isinstance(res, expr):
-                res = Expr(value=res) #TODO: does it make sense to cast expressions to statements here?
+                res = Expr(value=res)  # TODO: does it make sense to cast expressions to statements here?
             statements.append(res)
         return statements, tokens
 
@@ -147,20 +148,20 @@ class Parser:
     def handle_paren(self, tokens) -> (expr, list):
         paren_contents = []
         cur_token = tokens.pop(0)
-        while cur_token["type"] != T_RParen :
+        while cur_token["type"] != T_RParen:
             paren_contents.append(cur_token)
             cur_token = tokens.pop(0)
         paren_contents.append(cur_token)
 
         self.consume(paren_contents, T_LParen)
         expression, contents = self.handle_anything(paren_contents)
-        if self.peek(contents) != T_RParen :
-            #TODO: real erros
+        if self.peek(contents) != T_RParen:
+            # TODO: real erros
             print("passed in parenthetical with more than one expression")
         self.consume(contents, T_RParen)
         return expression, tokens
 
-    def handle_mod(self,tokens) -> (expr, list):
+    def handle_mod(self, tokens) -> (expr, list):
         valid_tokens = [T_LParen, T_Num]
         self.consume(tokens, T_Mod)
         followup = self.peek(tokens)
@@ -172,15 +173,15 @@ class Parser:
             right, tokens = self._token_to_function_map[followup](tokens)
             ar = Call(func=Name(id="float", ctx=Load()), args=[right], keywords=[])
             return Call(func=Name(id="int", ctx=Load()), args=[ar], keywords=[]), tokens
-        #return Num(right['value']), tokens
+        # return Num(right['value']), tokens
 
     # Assign
     def handle_make(self, tokens) -> (stmt, list):
         valid_tokens = [T_LParen, T_True, T_False, T_Not, T_Quote, T_Num, T_Mod]
 
         self.consume(tokens, T_Make)
-        if self.peek(tokens) != T_Word :
-            #TODO: write this fucking error
+        if self.peek(tokens) != T_Word:
+            # TODO: write this fucking error
             print("Ooh, what you making there? It sure isn't a variable, that's for goddamn sure!")
         variable = self.consume(tokens, T_Word)
 
@@ -275,12 +276,13 @@ class Parser:
             target = Name(id=left['value'], ctx=Store())
             fu = Call(func=Name(id="input", ctx=Load()), args=[], keywords=[])
         return Assign([target], fu), tokens
+
     # While
     def handle_while(self, tokens) -> (stmt, list):
         self.consume(tokens, T_While)
         conditional, tokens = self.handle_paren(tokens)
         body, tokens = self.handle_brace(tokens)
-        return While(test=conditional,body=body, orelse=[]), tokens
+        return While(test=conditional, body=body, orelse=[]), tokens
 
     # If
     def handle_if(self, tokens) -> (stmt, list):
@@ -291,7 +293,7 @@ class Parser:
             orelse, tokens = self.handle_else(tokens)
         else:
             orelse = []
-        return If(test=conditional,body=body, orelse=orelse), tokens
+        return If(test=conditional, body=body, orelse=orelse), tokens
 
     # orelse piece of if
     def handle_else(self, tokens) -> (stmt, list):
@@ -326,7 +328,7 @@ class Parser:
         else:
             result = self._temporary_error(msg="not_error")
 
-        return UnaryOp(op=Not(),operand=result), tokens
+        return UnaryOp(op=Not(), operand=result), tokens
 
     # Num
     def handle_num(self, tokens):
@@ -369,7 +371,8 @@ class Parser:
         else:
             right = self._temporary_error(msg="binop_error")
 
-        return BoolOp(op=op(), values=[left,right]), tokens
+        return BoolOp(op=op(), values=[left, right]), tokens
+
     # Name
     def handle_word(self, tokens):
         token_to_argument_map = {T_Plus: Add, T_Minus: Sub, T_Times: Mult, T_Over: Div}
@@ -381,7 +384,7 @@ class Parser:
             return self.handle_ineq(token, tokens)
         elif nxt == T_Or or nxt == T_And:
             word_var = Name(id=token["value"], ctx=Load())
-            return self.handle_boolop(word_var,Or if nxt == T_Or else And, tokens)
+            return self.handle_boolop(word_var, Or if nxt == T_Or else And, tokens)
         elif nxt == T_Input:
             return self.handle_input(token, tokens)
         else:

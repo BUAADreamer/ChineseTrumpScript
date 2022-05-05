@@ -50,8 +50,9 @@ class Utils:
         Make sure we're not executing as root, because America is strong
         :return:
         """
-        if os.name != 'nt' and os.geteuid() == 0:
-            raise Utils.SystemException('root')
+        # if os.name != 'nt' and os.geteuid() == 0:
+        #     raise Utils.SystemException('root')
+        pass
 
     @staticmethod
     def no_pc() -> None:
